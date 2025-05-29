@@ -1,0 +1,62 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow requires that you have an existing account with codescan.io
+# For more information about configuring your workflow,
+# read our documentation at https://github.com/codescan-io/codescan-scanner-action
+name: CodeScan
+
+on:
+  push:
+    branches: [ "amillion(main/master)" ]
+  pull_request:
+    # The branches below must be a subset of the branches above
+    branches: [ "amillion(main/master)" ]
+  schedule:
+    - cron: '20 13 * * 5'
+
+permissions:
+  contents: read
+
+jobs:
+    CodeScan:
+        permissions:
+          contents: read # for actions/checkout to fetch code
+          security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+          actions: read # only required for a private repository by github/codeql-action/upload-sarif to get the Action run status
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v4
+            -   name: Cache files
+                uses: actions/cache@v3
+                with:
+                    path: |
+                        ~/.sonar
+                    key: ${{ runner.os }}-sonar
+                    restore-keys: ${{ runner.os }}-sonar
+            -   name: Run Analysis
+                uses: codescan-io/codescan-scanner-action@5b2e8c5683ef6a5adc8fa3b7950bb07debccce12
+                with:
+                    login: ${{ secrets.CODESCAN_AUTH_TOKEN }}
+                    organization: ${{ secrets.CODESCAN_ORGANIZATION_KEY }}
+                    projectKey: ${{ secrets.CODESCAN_PROJECT_KEY }}
+            -   name: Upload SARIF file
+                uses: github/codeql-action/upload-sarif@v3
+                with:
+                    sarif_file: codescan.sarif
+            - name: Run VS Code Server
+  # You may pin to the exact commit or the version.
+  # uses: zongou/run-vscode-server@c9f7b3a608f43c1371e34fbebdcc63ef8fceb448
+  uses: zongou/run-vscode-server@0.0.3
+  with:
+    # stable or insider, default is stable
+    quality: # default is stable
+    # JSON string of VS Code settings
+    settings: # optional, default is {
+    "workbench.colorTheme": "Default Dark Modern"
+}
+
+          
