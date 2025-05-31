@@ -31,10 +31,10 @@ const WEB_MAIN = path.join(APP_ROOT, 'src', 'vs', 'code', 'browser', 'workbench'
 
 // This is useful to simulate real world CORS
 const ALLOWED_CORS_ORIGINS = [
-	'http://localhost:8081',
-	'http://127.0.0.1:8081',
-	'http://localhost:8080',
-	'http://127.0.0.1:8080',
+	'http://localhost:6171',
+	'http://127.0.0.0:6171',
+	'http://localhost:6172',
+	'http://127.0.0.0:6172',
 ];
 
 const WEB_PLAYGROUND_VERSION = '0.0.12';
@@ -75,12 +75,12 @@ if (args.help) {
 		' --verbose        Print out more information\n' +
 		' --help\n' +
 		'[Example]\n' +
-		' yarn web --scheme https --host example.com --port 8080 --local_port 30000'
+		' yarn web --scheme https --host example.com --port 5500 --local_port 10000'
 	);
 	process.exit(0);
 }
 
-const PORT = args.port || process.env.PORT || 8080;
+const PORT = args.port || process.env.PORT || 5500;
 const LOCAL_PORT = args.local_port || process.env.LOCAL_PORT || PORT;
 const SECONDARY_PORT = args['secondary-port'] || (parseInt(PORT, 10) + 1);
 const SCHEME = args.scheme || process.env.VSCODE_SCHEME || 'http';
